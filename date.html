@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DateTime Validation Form</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #e9f0f9;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .form-container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      max-width: 500px;
+      width: 100%;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    input[type="datetime-local"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+
+    .error {
+      color: red;
+      font-size: 14px;
+      margin-top: 5px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 12px;
+      background: #2c87f0;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .submit-btn:disabled {
+      background: #888;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+    <form id="bookingForm">
+      <div class="form-group">
+        <label for="fromDateTime">From Date & Time</label>
+        <input type="datetime-local" id="fromDateTime" required>
+      </div>
+
+      <div class="form-group">
+        <label for="toDateTime">To Date & Time</label>
+        <input type="datetime-local" id="toDateTime" required>
+        <div class="error" id="dateError"></div>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">Submit Booking</button>
+    </form>
+  </div>
+
+  <script>
+    const fromInput = document.getElementById("fromDateTime");
+    const toInput = document.getElementById("toDateTime");
+    const errorDiv = document.getElementById("dateError");
+    const submitBtn = document.getElementById("submitBtn");
+
+    function validateDateTime() {
+      const fromDate = new Date(fromInput.value);
+      const toDate = new Date(toInput.value);
+
+      if (toInput.value && fromInput.value && toDate <= fromDate) {
+        errorDiv.textContent = "❌ 'To Date & Time' must be later than 'From Date & Time'.";
+        submitBtn.disabled = true;
+      } else {
+        errorDiv.textContent = "";
+        submitBtn.disabled = false;
+      }
+    }
+
+    fromInput.addEventListener("change", validateDateTime);
+    toInput.addEventListener("input", validateDateTime);
+
+    document.getElementById("bookingForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      alert("Booking Submitted Successfully!");
+    });
+  </script>
+</body>
+</html>
