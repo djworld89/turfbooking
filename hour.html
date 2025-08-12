@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slot Availability</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f5f5f5;
+        padding: 20px;
+    }
+    h2 {
+        text-align: center;
+    }
+    .slots {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 10px;
+        margin-top: 20px;
+    }
+    .slot {
+        text-align: center;
+        padding: 10px;
+        border-radius: 8px;
+        color: white;
+        font-weight: bold;
+    }
+    .available {
+        background: #4CAF50; /* Green */
+    }
+    .unavailable {
+        background: #E53935; /* Red */
+    }
+</style>
+</head>
+<body>
+ 
+<h2>Slot Availability (24-Hour Format)</h2>
+<div class="slots" id="slotContainer"></div>
+ 
+<script>
+    // Example: slots that are NOT available
+    const unavailableSlots = ["09:00", "09:30", "14:30", "20:00"];
+ 
+    const container = document.getElementById("slotContainer");
+ 
+    for (let hour = 0; hour < 24; hour++) {
+        for (let min = 0; min < 60; min += 30) {
+            const time = `${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`;
+            const slotDiv = document.createElement("div");
+            slotDiv.textContent = time;
+            slotDiv.classList.add("slot");
+ 
+            if (unavailableSlots.includes(time)) {
+                slotDiv.classList.add("unavailable");
+            } else {
+                slotDiv.classList.add("available");
+            }
+            container.appendChild(slotDiv);
+        }
+    }
+</script>
+ 
+</body>
+</html>
