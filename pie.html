@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pie Chart - Collection vs Sports</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 30px;
+        }
+        canvas {
+            max-width: 400px;
+        }
+    </style>
+</head>
+<body>
+ 
+<h2>Sports & Collection Overview</h2>
+<canvas id="myPieChart"></canvas>
+ 
+<script>
+    // Example data — replace with PHP variables
+    var totalCollection = 50000; // total revenue
+    var totalSports = 25;       // total sports count
+ 
+    // Create pie chart
+    var ctx = document.getElementById('myPieChart').getContext('2d');
+    var myPieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Total Collection (₹)', 'Total Sports'],
+            datasets: [{
+                data: [totalCollection, totalSports],
+                backgroundColor: ['#4CAF50', '#FF9800']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.label + ': ' + context.formattedValue;
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+ 
+</body>
+</html>
