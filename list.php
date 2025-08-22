@@ -1,9 +1,5 @@
 <?php
-session_start();
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit();
-}
+
 include('db.php');
 $sql = "SELECT * FROM bookings ORDER BY id DESC";
 $result = $conn->query($sql);
@@ -92,6 +88,7 @@ $result = $conn->query($sql);
         <table id="bookingTable" class="display responsive nowrap" style="width:100%">
             <thead>
                 <tr>
+                    <th>Srno.</th>
                     <th>Booking ID</th>
                     <th>Name</th>
                     <th>Mobile</th>
@@ -109,7 +106,11 @@ $result = $conn->query($sql);
                 <?php while ($row = $result->fetch_assoc()): ?>
                 <tr>
                     <td>
-                        <?= $row['booking_id'] ?></td>
+                        <?= $row['id'] ?>
+                    </td>
+                    <td>
+                        <?= $row['booking_id'] ?>
+                    </td>
                     <td><?= $row['name'] ?></td>
                     <td><?= $row['mobile'] ?></td>
 
@@ -124,7 +125,8 @@ $result = $conn->query($sql);
                                 title="View">visibility</i></a>
                         <a href="update.php?bookid=<?= $row['id'] ?>"><i class="material-icons edit-icon"
                                 title="Edit">edit</i></a>
-                        <i class="material-icons delete-icon" title="Delete">delete</i>
+                        <i class="material-icons delete-icon" onclick="deleteBooking(<?= $row['id'] ?>)"
+                            title="Delete">delete</i>
                     </td>
                 </tr>
                 <?php endwhile; ?>
@@ -148,23 +150,52 @@ $result = $conn->query($sql);
             responsive: true,
             paging: true,
             searching: true,
-            ordering: true
+            ordering: true,
+            order: [
+                [0, 'desc']
+            ]
         });
 
-        $('.view-icon').click(function() {
-            alert("Viewing Booking Details");
-        });
+        // $('.view-icon').click(function() {
+        //     alert("Viewing Booking Details");
+        // });
 
-        $('.edit-icon').click(function() {
-            alert("Editing Booking");
-        });
+        // $('.edit-icon').click(function() {
+        //     alert("Editing Booking");
+        // });
 
-        $('.delete-icon').click(function() {
-            if (confirm("Are you sure to delete this booking?")) {
-                $(this).closest('tr').remove();
-            }
-        });
+        // $('.delete-icon').click(function() {
+        //     if (confirm("Are you sure to delete this booking?")) {
+        //         $(this).closest('tr').remove();
+        //     }
+        // });
     });
+
+    function deleteBooking(id) {
+        if (!confirm("Are you sure you want to delete booking ID " + id + "?")) {
+            return;
+        }
+
+        fetch("delete_booking.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: "id=" + id
+            })
+            .then(response => response.json())
+            .then(data => {
+                window.location.href = "list.php";
+                // if (data.status === "success") {
+                //     // Remove row from table
+                //     document.getElementById("row-" + id).remove();
+                //     alert("✅ Booking ID " + id + " deleted.");
+                // } else {
+                //     alert("❌ Error: " + data.message);
+                // }
+            })
+            .catch(err => alert("⚠️ Request failed: " + err));
+    }
     </script>
     <?php include 'footer.php' ?>
 </body>

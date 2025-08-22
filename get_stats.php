@@ -7,7 +7,7 @@ $to = $_GET['to'] . ' 23:59:59';   // Format: '2025-08-10'
 
 // Validate dates
 if (!$from || !$to) {
-    die(json_encode(["error" => "Date range required."]));
+  die(json_encode(["error" => "Date range required."]));
 }
 
 // SQL query to count total bookings and total paid amount
@@ -27,8 +27,8 @@ $data = $result->fetch_assoc();
 
 // Return JSON response
 echo json_encode([
-    "total_sports" => $data['total_sports'] ?? 0,
-    "total_amount" => $data['total_amount'] ?? 0.00
+  "total_sports" => $data['total_sports'] ?? 0,
+  "total_amount" => $data['total_amount'] ?? 0.00
 ]);
 
 $stmt->close();

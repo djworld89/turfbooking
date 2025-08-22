@@ -1,113 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>DateTime Validation Form</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slot Availability</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #e9f0f9;
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      margin: 0;
       padding: 20px;
-      display: flex;
-      justify-content: center;
     }
 
-    .form-container {
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-      max-width: 500px;
-      width: 100%;
-    }
-
-    .form-group {
+    h2 {
+      text-align: center;
       margin-bottom: 20px;
     }
 
-    label {
-      font-weight: 600;
-      display: block;
-      margin-bottom: 6px;
+    .slot-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 15px;
     }
 
-    input[type="datetime-local"] {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 15px;
-    }
-
-    .error {
-      color: red;
-      font-size: 14px;
-      margin-top: 5px;
-    }
-
-    .submit-btn {
-      width: 100%;
-      padding: 12px;
-      background: #2c87f0;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
+    .slot {
+      padding: 15px;
+      text-align: center;
+      border-radius: 10px;
+      font-weight: bold;
       cursor: pointer;
+      transition: 0.3s;
     }
 
-    .submit-btn:disabled {
-      background: #888;
+    .available {
+      background: #d4f8d4;
+      border: 2px solid #28a745;
+      color: #155724;
+    }
+
+    .unavailable {
+      background: #f8d7da;
+      border: 2px solid #dc3545;
+      color: #721c24;
       cursor: not-allowed;
+    }
+
+    .slot:hover.available {
+      background: #28a745;
+      color: white;
+    }
+
+    @media (max-width: 600px) {
+      .slot-container {
+        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      }
     }
   </style>
 </head>
 <body>
-
-  <div class="form-container">
-    <form id="bookingForm">
-      <div class="form-group">
-        <label for="fromDateTime">From Date & Time</label>
-        <input type="datetime-local" id="fromDateTime" required>
-      </div>
-
-      <div class="form-group">
-        <label for="toDateTime">To Date & Time</label>
-        <input type="datetime-local" id="toDateTime" required>
-        <div class="error" id="dateError"></div>
-      </div>
-
-      <button type="submit" class="submit-btn" id="submitBtn">Submit Booking</button>
-    </form>
-  </div>
+  <h2>All Slots Availability</h2>
+  <div class="slot-container" id="slots"></div>
 
   <script>
-    const fromInput = document.getElementById("fromDateTime");
-    const toInput = document.getElementById("toDateTime");
-    const errorDiv = document.getElementById("dateError");
-    const submitBtn = document.getElementById("submitBtn");
+    // Generate slots (hourly)
+    const slotsContainer = document.getElementById("slots");
+    const bookedSlots = ["09:00", "14:00", "18:00"]; // example booked slots
 
-    function validateDateTime() {
-      const fromDate = new Date(fromInput.value);
-      const toDate = new Date(toInput.value);
+    for (let i = 0; i < 24; i++) {
+      let hour = String(i).padStart(2, '0') + ":00";
+      let div = document.createElement("div");
+      div.classList.add("slot");
 
-      if (toInput.value && fromInput.value && toDate <= fromDate) {
-        errorDiv.textContent = "❌ 'To Date & Time' must be later than 'From Date & Time'.";
-        submitBtn.disabled = true;
+      if (bookedSlots.includes(hour)) {
+        div.classList.add("unavailable");
+        div.innerText = hour + " ❌";
       } else {
-        errorDiv.textContent = "";
-        submitBtn.disabled = false;
+        div.classList.add("available");
+        div.innerText = hour + " ✅";
       }
+
+      slotsContainer.appendChild(div);
     }
-
-    fromInput.addEventListener("change", validateDateTime);
-    toInput.addEventListener("input", validateDateTime);
-
-    document.getElementById("bookingForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      alert("Booking Submitted Successfully!");
-    });
   </script>
 </body>
 </html>
