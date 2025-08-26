@@ -89,9 +89,9 @@ $result = $conn->query($sql);
             <thead>
                 <tr>
                     <th>Srno.</th>
-                    <th>Booking ID</th>
                     <th>Name</th>
                     <th>Mobile</th>
+                    <th>Booking ID</th>
                     <th>Sport</th>
                     <th>Amount</th>
                     <th>Status</th>
@@ -108,12 +108,11 @@ $result = $conn->query($sql);
                     <td>
                         <?= $row['id'] ?>
                     </td>
+                    <td><?= $row['name'] ?></td>
+                    <td><?= $row['mobile'] ?></td>
                     <td>
                         <?= $row['booking_id'] ?>
                     </td>
-                    <td><?= $row['name'] ?></td>
-                    <td><?= $row['mobile'] ?></td>
-
                     <td><?= $row['sport'] ?></td>
                     <td>₹<?= $row['amount'] ?></td>
                     <td><?= $row['paymentStatus'] ?></td>

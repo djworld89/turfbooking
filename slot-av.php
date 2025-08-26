@@ -95,6 +95,17 @@
         color: #007bff;
         /* Change color on hover */
     }
+
+    @media (max-width: 768px) {
+        h3 {
+            font-size: 20px;
+            background: crimson;
+            text-align: center;
+            height: 30px;
+            color: antiquewhite;
+            padding: 5px;
+        }
+    }
     </style>
 </head>
 
@@ -105,7 +116,7 @@
     <div class="filter-container">
         <input type="date" id="dateFilter">
     </div>
-
+    <h3 id="kiv" style="display:none;">Booked Slots</h3>
     <div class="slots-grid" id="slotsContainer"></div>
     <br>
     <div id="av" style="margin: 0 auto;"></div>
@@ -137,6 +148,8 @@
         slotsContainer.innerHTML = "";
         avslot.innerHTML = "";
         if (bookedSlots.length > 0) {
+            document.getElementById("kiv").style.display = "block";
+
             for (let i = 0; i < bookedSlots.length; i++) {
                 const slotDiv = document.createElement("div");
                 slotDiv.classList.add("slot");
@@ -145,6 +158,7 @@
                 slotsContainer.appendChild(slotDiv);
             }
         } else {
+            document.getElementById("kiv").style.display = "none";
             slotsContainer.innerHTML =
                 "<div style='text-align: center;background: coral;'> All Slots Available</div>";
         }

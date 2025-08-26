@@ -54,14 +54,14 @@
     <?php include 'header.php' ?>
     <h2>Booking Report CSV Download</h2>
     <div class="download-box">
-        <form method="get" action="download_report.php">
+        <form method="get" action="report.php">
             <label>From Date:</label>
             <input type="date" name="fromDate" required>
 
             <label>To Date:</label>
             <input type="date" name="toDate" required>
 
-            <button type="submit" class="btn">📥 Download CSV</button>
+            <button type="submit" class="btn">📥 Download</button>
         </form>
     </div>
     <?php include 'footer.php' ?>

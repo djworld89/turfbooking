@@ -19,7 +19,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100vh;
+        height: 200vh;
     }
 
     .login-container {
@@ -60,8 +60,7 @@
         margin-bottom: 6px;
     }
 
-    input[type="text"],
-    input[type="password"] {
+    .form-group input {
         width: 100%;
         padding: 12px;
         border-radius: 8px;
@@ -75,9 +74,9 @@
         align-items: center;
     }
 
-    .show-password input {
+    /* .show-password input {
         margin-right: 6px;
-    }
+    } */
 
     .login-btn {
         width: 100%;
@@ -125,29 +124,36 @@
     <div class="login-container">
         <div style="text-align:center;">
             <img src="turf_booking_mng.png" height="100px;">
-            <h2>Login</h2>
+            <h2>Register</h2>
         </div>
         <form id="loginForm" method="POST">
             <div class="form-group">
                 <label for="Username">Username</label>
-                <input type="text" name="username" value="<?= $_GET['user'] ?? '' ?>" id="username"
-                    placeholder="Username" required>
+                <input type="text" name="username" id="username" placeholder="Username" required>
             </div>
 
             <div class="form-group">
                 <label for="password">Password</label>
                 <input type="password" name="password" id="password" required placeholder="Enter your password">
                 <div class="show-password">
-                    <input type="checkbox" onclick="togglePassword()"> Show Password
+                    <input type="checkbox" style="width: auto;" onclick="togglePassword()"> Show Password
                 </div>
             </div>
-            <div id="message"></div>
+            <div class="form-group">
+                <label for="mobile">Mobile No</label>
+                <input type="tel" id="mobile" name="mobile" required pattern="[0-9]{10}">
+            </div>
+            <div class="form-group">
+                <label for="email">Email ID</label>
+                <input type="email" id="email" name="email">
+            </div>
+            <div id="message" style="color:blue"></div>
 
-            <button type="submit" class="login-btn">Login</button>
+            <button type="submit" class="login-btn">Submit</button>
         </form>
 
         <div class="login-footer">
-            Don’t have an account? <a href="register.php">Register here</a>
+            Already, have an account? <a href="login.php">Login here</a>
         </div>
     </div>
 
@@ -162,9 +168,11 @@
 
         let username = document.getElementById("username").value;
         let password = document.getElementById("password").value;
+        let email = document.getElementById("email").value;
+        let mobile = document.getElementById("mobile").value;
 
         let xhr = new XMLHttpRequest();
-        xhr.open("POST", "check_login.php", true);
+        xhr.open("POST", "check_register.php", true);
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
         xhr.onload = function() {
@@ -173,13 +181,16 @@
 
             if (response.status === "success") {
                 msgDiv.innerHTML = "<p class='success'>" + response.message + "</p>";
-                window.location.href = "dashboard.php"
+                setTimeout(() => {
+                    window.location.href = "login.php?user=" + response.user
+                }, 2000);
             } else {
                 msgDiv.innerHTML = "<p class='error'>" + response.message + "</p>";
             }
         };
 
-        xhr.send("username=" + encodeURIComponent(username) + "&password=" + encodeURIComponent(password));
+        xhr.send("username=" + encodeURIComponent(username) + "&password=" + encodeURIComponent(password) +
+            "&email=" + encodeURIComponent(email) + "&mobile=" + encodeURIComponent(mobile));
     });
     </script>
 </body>

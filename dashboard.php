@@ -59,14 +59,21 @@
     .card h3 {
         margin: 0;
         font-size: 20px;
-        color: #555;
+        color: indigo;
     }
 
-    .card p {
+    #totalSports {
         margin-top: 10px;
         font-size: 26px;
         font-weight: bold;
-        color: #2c3e50;
+        color: magenta;
+    }
+
+    #totalAmount {
+        margin-top: 10px;
+        font-size: 26px;
+        font-weight: bold;
+        color: darkgreen;
     }
 
     .filters {
