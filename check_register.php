@@ -3,7 +3,7 @@ include('db.php');
 session_start();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
-    $password = $_POST['password'];
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $mobile = $_POST['mobile'];
     $email = $_POST['email'];
     $stmt = $conn->prepare("SELECT id, password, is_admin FROM users WHERE username = ?");
