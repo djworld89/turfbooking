@@ -37,7 +37,7 @@ if ($result->num_rows > 0) {
         fputcsv($output, $row);
 
         $totalSports++;
-        if (strtolower($row['paymentStatus']) === "Paid") {
+        if (strtolower($row['paymentStatus']) === "paid") {
             $totalCollection += $row['amount'];
         }
     }
