@@ -1,6 +1,8 @@
 <?php
 include('db.php');
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    session_start();
+    $id = $_SESSION['user_id'];
     $name = $_POST['name'];
     $mobile = $_POST['mobile'];
     $email = $_POST['email'];
@@ -11,21 +13,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $to = $_POST['toDateTime'];
     $remark = $_POST['remark'];
     $booking_id = uniqid("BOOK_");
-
-    $stmt = $conn->prepare("INSERT INTO bookings 
-    (booking_id,name, mobile, email, sport, amount, paymentStatus, fromDateTime, toDateTime, remark) 
-    VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?)");
-
-    $stmt->bind_param("sssssdssss", $booking_id, $name, $mobile, $email, $sport, $amount, $status, $from, $to, $remark);
-
-    if ($stmt->execute()) {
-        echo "✅ Booking inserted successfully!";
-        header("Location: list.php");
+    $sql = "SELECT COUNT(*) AS cnt
+FROM bookings
+WHERE user_id=$id and ((fromDateTime BETWEEN ? AND ? ) || (toDateTime BETWEEN ? AND ?))";
+    $stmt1 = $conn->prepare($sql);
+    $stmt1->bind_param("ssss", $from, $to, $from, $to);
+    $stmt1->execute();
+    $result = $stmt1->get_result();
+    $data = $result->fetch_assoc();
+    if ($data['cnt'] > 0) {
+        echo "<script>alert('❌ Error: Slots Already Booked, Please choose other Slots!!');window.history.back();</script>";
+        $stmt1->close();
     } else {
-        echo "❌ Error: " . $stmt->error;
-    }
+        $stmt = $conn->prepare("INSERT INTO bookings 
+    (booking_id,name, mobile, email, sport, amount, paymentStatus, fromDateTime, toDateTime, remark,user_id) 
+    VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?,?)");
 
-    $stmt->close();
+        $stmt->bind_param("sssssdssssi", $booking_id, $name, $mobile, $email, $sport, $amount, $status, $from, $to, $remark, $id);
+
+        if ($stmt->execute()) {
+            echo "✅ Booking inserted successfully!";
+            header("Location: list.php");
+        } else {
+            echo "❌ Error: " . $stmt->error;
+        }
+        $stmt->close();
+
+    }
     $conn->close();
 }
 ?>
@@ -37,88 +51,88 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Book Turf</title>
     <style>
-    body {
-        font-family: 'Segoe UI', sans-serif;
-        background: url(turf.main.avif) no-repeat scroll center 0 / cover;
-        margin: 0;
-        padding: 0;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-    }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: url(turf.main.avif) no-repeat scroll center 0 / cover;
+            margin: 0;
+            padding: 0;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
 
-    .booking-form {
-        padding: 30px 40px;
-        border-radius: 15px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        max-width: 450px;
-        background-color: lightyellow;
-        margin: 0 auto;
-        width: 65%;
-    }
+        .booking-form {
+            padding: 30px 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            max-width: 450px;
+            background-color: lightyellow;
+            margin: 0 auto;
+            width: 65%;
+        }
 
-    .booking-form h2 {
-        text-align: center;
-        margin-bottom: 25px;
-        color: #2e3c50;
-    }
+        .booking-form h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #2e3c50;
+        }
 
-    .form-group {
-        margin-bottom: 15px;
-    }
+        .form-group {
+            margin-bottom: 15px;
+        }
 
-    .form-group label {
-        display: block;
-        font-weight: 700;
-        margin-bottom: 5px;
-        color: darkblue;
-    }
+        .form-group label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: darkblue;
+        }
 
-    .form-group input,
-    .form-group select {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        font-size: 16px;
-        transition: 0.3s;
-    }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: 0.3s;
+        }
 
-    .form-group input:focus,
-    .form-group select:focus {
-        border-color: #4a90e2;
-        outline: none;
-    }
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #4a90e2;
+            outline: none;
+        }
 
-    .submit-btn {
-        width: 100%;
-        background: #4a90e2;
-        color: white;
-        padding: 12px;
-        font-size: 18px;
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-        transition: background 0.3s ease;
-    }
+        .submit-btn {
+            width: 100%;
+            background: #4a90e2;
+            color: white;
+            padding: 12px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
 
-    .submit-btn:hover {
-        background: #357ab7;
-    }
+        .submit-btn:hover {
+            background: #357ab7;
+        }
 
-    input[type="datetime-local"] {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        font-size: 15px;
-    }
+        input[type="datetime-local"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+        }
 
-    .error {
-        color: red;
-        font-size: 14px;
-        margin-top: 5px;
-    }
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+        }
     </style>
 </head>
 
@@ -146,11 +160,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="form-group">
             <label for="sport">Sports Type</label>
             <select id="sport" name="sport" required>
-                <option value="">Select</option>
-                <option value="Football">Football</option>
-                <option value="Cricket">Cricket</option>
-                <option value="Badminton">Badminton</option>
-                <option value="Tennis">Tennis</option>
+                <option value="">-- Select Sport --</option>
+                <option value="cricket">Cricket</option>
+                <option value="football">Football</option>
+                <option value="badminton">Badminton</option>
+                <option value="tennis">Tennis</option>
+                <option value="basketball">Basketball</option>
+                <option value="hockey">Hockey</option>
+                <option value="volleyball">Volleyball</option>
+                <option value="handball">Handball</option>
+                <option value="kabaddi">Kabaddi</option>
+                <option value="rugby">Rugby</option>
+                <option value="throwball">Throwball</option>
+                <option value="frisbee">Frisbee</option>
+                <option value="TT">TT</option>
+                <option value="Pickle Ball">Pickle Ball</option>
+                <option value="Others">Others</option>
+
             </select>
         </div>
         <div class="form-group">
@@ -185,30 +211,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </form>
 
     <script>
-    const fromInput = document.getElementById("fromDateTime");
-    const toInput = document.getElementById("toDateTime");
-    const errorDiv = document.getElementById("dateError");
+        const fromInput = document.getElementById("fromDateTime");
+        const toInput = document.getElementById("toDateTime");
+        const errorDiv = document.getElementById("dateError");
 
-    function validateDateTime() {
-        const fromDate = new Date(fromInput.value);
-        const toDate = new Date(toInput.value);
+        function validateDateTime() {
+            const fromDate = new Date(fromInput.value);
+            const toDate = new Date(toInput.value);
 
-        if (toInput.value && fromInput.value && toDate <= fromDate) {
-            errorDiv.textContent = "❌ 'To Date & Time' must be later than 'From Date & Time'.";
-            submitBtn.disabled = true;
-        } else {
-            errorDiv.textContent = "";
-            submitBtn.disabled = false;
+            if (toInput.value && fromInput.value && toDate <= fromDate) {
+                errorDiv.textContent = "❌ 'To Date & Time' must be later than 'From Date & Time'.";
+                submitBtn.disabled = true;
+            } else {
+                errorDiv.textContent = "";
+                submitBtn.disabled = false;
+            }
         }
-    }
 
-    fromInput.addEventListener("change", validateDateTime);
-    toInput.addEventListener("input", validateDateTime);
-    // document.getElementById('turfBookingForm').addEventListener('submit', function(e) {
-    //     e.preventDefault();
-    //     alert("Booking Submitted!");
-    //     this.reset();
-    // });
+        fromInput.addEventListener("change", validateDateTime);
+        toInput.addEventListener("input", validateDateTime);
+        // document.getElementById('turfBookingForm').addEventListener('submit', function(e) {
+        //     e.preventDefault();
+        //     alert("Booking Submitted!");
+        //     this.reset();
+        // });
     </script>
     <?php include 'footer.php' ?>
 </body>
