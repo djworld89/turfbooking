@@ -1,5 +1,7 @@
 <?php
 include 'db.php';
+session_start();
+$id = $_SESSION['user_id'];
 if (!$_GET['fromDate'] || !$_GET['toDate']) {
     die(json_encode(["error" => "Date range required."]));
 }
@@ -25,7 +27,7 @@ fputcsv($output, ['Booking ID', 'Name', 'Mobile', 'Email', 'Sport', 'Amount', 'P
 // Query bookings
 $sql = "SELECT booking_id, name, mobile, email, sport, amount, paymentStatus, fromDateTime, toDateTime
         FROM bookings 
-        WHERE DATE(created_at) BETWEEN '$fromDate' AND '$toDate'
+        WHERE user_id=$id and DATE(created_at) BETWEEN '$fromDate' AND '$toDate'
         ORDER BY created_at ASC";
 $result = $conn->query($sql);
 

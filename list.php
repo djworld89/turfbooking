@@ -1,9 +1,3 @@
-<?php
-
-include('db.php');
-$sql = "SELECT * FROM bookings ORDER BY id DESC";
-$result = $conn->query($sql);
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,68 +14,74 @@ $result = $conn->query($sql);
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <style>
-    body {
-        font-family: 'Segoe UI', sans-serif;
-        background: url(turf.main.avif) no-repeat scroll center 0 / cover;
-        padding: 20px;
-        margin: 0;
-    }
-
-    h2 {
-        text-align: center;
-        color: #2c3e50;
-        margin-bottom: 20px;
-    }
-
-    .datatable-container {
-        background: lightyellow;
-        padding: 15px;
-        border-radius: 15px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        max-width: 100%;
-        overflow-x: auto;
-    }
-
-    .action-icons i {
-        cursor: pointer;
-        padding: 6px;
-        border-radius: 50%;
-        margin-right: 5px;
-        transition: 0.2s;
-    }
-
-    .action-icons i:hover {
-        background-color: #ecf0f1;
-    }
-
-    .material-icons {
-        font-size: 20px;
-        vertical-align: middle;
-    }
-
-    .edit-icon {
-        color: #2980b9;
-    }
-
-    .view-icon {
-        color: #27ae60;
-    }
-
-    .delete-icon {
-        color: #e74c3c;
-    }
-
-    @media (max-width: 768px) {
-        h2 {
-            font-size: 22px;
-            background: lightblue;
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: url(turf.main.avif) no-repeat scroll center 0 / cover;
+            padding: 20px;
+            margin: 0;
         }
-    }
+
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .datatable-container {
+            background: lightyellow;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            max-width: 100%;
+            overflow-x: auto;
+        }
+
+        .action-icons i {
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 50%;
+            margin-right: 5px;
+            transition: 0.2s;
+        }
+
+        .action-icons i:hover {
+            background-color: #ecf0f1;
+        }
+
+        .material-icons {
+            font-size: 20px;
+            vertical-align: middle;
+        }
+
+        .edit-icon {
+            color: #2980b9;
+        }
+
+        .view-icon {
+            color: #27ae60;
+        }
+
+        .delete-icon {
+            color: #e74c3c;
+        }
+
+        @media (max-width: 768px) {
+            h2 {
+                font-size: 22px;
+                background: lightblue;
+            }
+        }
     </style>
 </head>
 
 <body>
-    <?php include 'header.php' ?>
+    <?php include 'header.php';
+
+    include('db.php');
+    $id = $_SESSION['user_id'];
+    $sql = "SELECT * FROM bookings where user_id=$id ORDER BY id DESC";
+    $result = $conn->query($sql);
+    ?>
     <h2>List of Turf Bookings</h2>
 
     <div class="datatable-container">
@@ -103,36 +103,36 @@ $result = $conn->query($sql);
             </thead>
             <tbody>
                 <?php if ($result->num_rows > 0): ?>
-                <?php while ($row = $result->fetch_assoc()): ?>
-                <tr>
-                    <td>
-                        <?= $row['id'] ?>
-                    </td>
-                    <td><?= $row['name'] ?></td>
-                    <td><?= $row['mobile'] ?></td>
-                    <td>
-                        <?= $row['booking_id'] ?>
-                    </td>
-                    <td><?= $row['sport'] ?></td>
-                    <td>₹<?= $row['amount'] ?></td>
-                    <td><?= $row['paymentStatus'] ?></td>
-                    <td><?= $row['fromDateTime'] ?></td>
-                    <td><?= $row['toDateTime'] ?></td>
-                    <td><?= $row['created_at'] ?></td>
-                    <td class="action-icons">
-                        <a href="view.php?bookid=<?= $row['id'] ?>"><i class="material-icons view-icon"
-                                title="View">visibility</i></a>
-                        <a href="update.php?bookid=<?= $row['id'] ?>"><i class="material-icons edit-icon"
-                                title="Edit">edit</i></a>
-                        <i class="material-icons delete-icon" onclick="deleteBooking(<?= $row['id'] ?>)"
-                            title="Delete">delete</i>
-                    </td>
-                </tr>
-                <?php endwhile; ?>
+                    <?php while ($row = $result->fetch_assoc()): ?>
+                        <tr>
+                            <td>
+                                <?= $row['id'] ?>
+                            </td>
+                            <td><?= $row['name'] ?></td>
+                            <td><?= $row['mobile'] ?></td>
+                            <td>
+                                <?= $row['booking_id'] ?>
+                            </td>
+                            <td><?= $row['sport'] ?></td>
+                            <td>₹<?= $row['amount'] ?></td>
+                            <td><?= $row['paymentStatus'] ?></td>
+                            <td><?= $row['fromDateTime'] ?></td>
+                            <td><?= $row['toDateTime'] ?></td>
+                            <td><?= $row['created_at'] ?></td>
+                            <td class="action-icons">
+                                <a href="view.php?bookid=<?= $row['id'] ?>"><i class="material-icons view-icon"
+                                        title="View">visibility</i></a>
+                                <a href="update.php?bookid=<?= $row['id'] ?>"><i class="material-icons edit-icon"
+                                        title="Edit">edit</i></a>
+                                <i class="material-icons delete-icon" onclick="deleteBooking(<?= $row['id'] ?>)"
+                                    title="Delete">delete</i>
+                            </td>
+                        </tr>
+                    <?php endwhile; ?>
                 <?php else: ?>
-                <tr>
-                    <td colspan="10">No bookings found.</td>
-                </tr>
+                    <tr>
+                        <td colspan="10">No bookings found.</td>
+                    </tr>
                 <?php endif; ?>
             </tbody>
         </table>
@@ -144,57 +144,57 @@ $result = $conn->query($sql);
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 
     <script>
-    $(document).ready(function() {
-        $('#bookingTable').DataTable({
-            responsive: true,
-            paging: true,
-            searching: true,
-            ordering: true,
-            order: [
-                [0, 'desc']
-            ]
+        $(document).ready(function () {
+            $('#bookingTable').DataTable({
+                responsive: true,
+                paging: true,
+                searching: true,
+                ordering: true,
+                order: [
+                    [0, 'desc']
+                ]
+            });
+
+            // $('.view-icon').click(function() {
+            //     alert("Viewing Booking Details");
+            // });
+
+            // $('.edit-icon').click(function() {
+            //     alert("Editing Booking");
+            // });
+
+            // $('.delete-icon').click(function() {
+            //     if (confirm("Are you sure to delete this booking?")) {
+            //         $(this).closest('tr').remove();
+            //     }
+            // });
         });
 
-        // $('.view-icon').click(function() {
-        //     alert("Viewing Booking Details");
-        // });
+        function deleteBooking(id) {
+            if (!confirm("Are you sure you want to delete booking ID " + id + "?")) {
+                return;
+            }
 
-        // $('.edit-icon').click(function() {
-        //     alert("Editing Booking");
-        // });
-
-        // $('.delete-icon').click(function() {
-        //     if (confirm("Are you sure to delete this booking?")) {
-        //         $(this).closest('tr').remove();
-        //     }
-        // });
-    });
-
-    function deleteBooking(id) {
-        if (!confirm("Are you sure you want to delete booking ID " + id + "?")) {
-            return;
-        }
-
-        fetch("delete_booking.php", {
+            fetch("delete_booking.php", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 },
                 body: "id=" + id
             })
-            .then(response => response.json())
-            .then(data => {
-                window.location.href = "list.php";
-                // if (data.status === "success") {
-                //     // Remove row from table
-                //     document.getElementById("row-" + id).remove();
-                //     alert("✅ Booking ID " + id + " deleted.");
-                // } else {
-                //     alert("❌ Error: " + data.message);
-                // }
-            })
-            .catch(err => alert("⚠️ Request failed: " + err));
-    }
+                .then(response => response.json())
+                .then(data => {
+                    window.location.href = "list.php";
+                    // if (data.status === "success") {
+                    //     // Remove row from table
+                    //     document.getElementById("row-" + id).remove();
+                    //     alert("✅ Booking ID " + id + " deleted.");
+                    // } else {
+                    //     alert("❌ Error: " + data.message);
+                    // }
+                })
+                .catch(err => alert("⚠️ Request failed: " + err));
+        }
     </script>
     <?php include 'footer.php' ?>
 </body>

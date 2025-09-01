@@ -6,14 +6,14 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 include('db.php');
-
+$id = $_SESSION['user_id'];
 // Get selected date
 $date = isset($_GET["date"]) ? $_GET["date"] . ' 00:00:00' : date("Y-m-d") . ' 00:00:00';
 $date1 = isset($_GET["date"]) ? $_GET["date"] . ' 23:59:59' : date("Y-m-d") . ' 23:59:59';
 
 // Fetch booked slots from database
 $sql =
-    "SELECT fromDateTime,toDateTime FROM bookings WHERE ((fromDateTime BETWEEN ? AND ? ) || (toDateTime BETWEEN ? AND ?)) and paymentStatus = 'Pending'";
+    "SELECT fromDateTime,toDateTime FROM bookings WHERE user_id=$id and ((fromDateTime BETWEEN ? AND ? ) || (toDateTime BETWEEN ? AND ?)) and paymentStatus = 'Pending'";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("ssss", $date, $date1, $date, $date1);
 $stmt->execute();

@@ -1,6 +1,7 @@
 <?php
 include 'db.php';
-
+session_start();
+$id = $_SESSION['user_id'];
 // Input dates from a form or AJAX request
 // $from = $_GET['from'] . ' 00:00:00'; // Format: '2025-08-01'
 // $to = $_GET['to'] . ' 23:59:59';   // Format: '2025-08-10'
@@ -16,7 +17,7 @@ $sql = "
            COUNT(*) AS total_sports,
            SUM(amount) AS total_collection
     FROM bookings
-    WHERE paymentStatus = 'Paid'
+    WHERE user_id=$id and paymentStatus = 'Paid'
     GROUP BY sport
 ";
 
