@@ -22,7 +22,7 @@ WHERE user_id=$id and ((fromDateTime BETWEEN ? AND ? ) || (toDateTime BETWEEN ? 
     $result = $stmt1->get_result();
     $data = $result->fetch_assoc();
     if ($data['cnt'] > 0) {
-        echo "<script>alert('❌ Error: Slots Already Booked, Please choose other Slots!!');window.history.back();</script>";
+        header("Location: error.php");
         $stmt1->close();
     } else {
         $stmt = $conn->prepare("INSERT INTO bookings 

@@ -39,7 +39,7 @@ WHERE user_id=$uid and id !=$id and ((fromDateTime BETWEEN ? AND ? ) || (toDateT
     $result = $stmt1->get_result();
     $data = $result->fetch_assoc();
     if ($data['cnt'] > 0) {
-        echo "<script>alert('❌ Error: Slots Already Booked, Please choose other Slots!!');window.history.back();</script>";
+        header("Location: error.php");
         $stmt1->close();
     } else {
         $sql = "UPDATE bookings SET 
