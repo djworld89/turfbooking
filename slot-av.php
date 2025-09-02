@@ -151,11 +151,17 @@
             document.getElementById("kiv").style.display = "block";
 
             for (let i = 0; i < bookedSlots.length; i++) {
+                let parts = bookedSlots[i].split(" -- ");
                 const slotDiv = document.createElement("div");
                 slotDiv.classList.add("slot");
                 slotDiv.classList.add("booked");
-                slotDiv.textContent = bookedSlots[i];
-                slotsContainer.appendChild(slotDiv);
+                slotDiv.textContent = parts[0];
+                let link = document.createElement("a");
+                link.href = "view.php?bookid=" + parts[1];
+                link.appendChild(slotDiv)
+                slotsContainer.appendChild(link);
+                // Create a link
+
             }
         } else {
             document.getElementById("kiv").style.display = "none";

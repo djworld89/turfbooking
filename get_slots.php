@@ -13,7 +13,7 @@ $date1 = isset($_GET["date"]) ? $_GET["date"] . ' 23:59:59' : date("Y-m-d") . ' 
 
 // Fetch booked slots from database
 $sql =
-    "SELECT fromDateTime,toDateTime FROM bookings WHERE user_id=$id and ((fromDateTime BETWEEN ? AND ? ) || (toDateTime BETWEEN ? AND ?)) and paymentStatus = 'Pending'";
+    "SELECT fromDateTime,toDateTime,id FROM bookings WHERE user_id=$id and ((fromDateTime BETWEEN ? AND ? ) || (toDateTime BETWEEN ? AND ?)) and paymentStatus = 'Pending'";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("ssss", $date, $date1, $date, $date1);
 $stmt->execute();
@@ -33,7 +33,7 @@ while ($row = $result->fetch_assoc()) {
     // } else {
     //     echo "Both are the same";
     // }
-    $bookedSlots[] = $ftime . " To " . $ttime;
+    $bookedSlots[] = $ftime . " To " . $ttime . " -- " . $row['id'];
 }
 
 header("Content-Type: application/json");
